@@ -61,34 +61,31 @@
     </nav>
   </header>
   <main id="contido">
-<h1>Evidencias e planos</h1>
-    <p class="lead">Fotografías do vertido e o plano oficial de infraestruturas de saneamento do Concello de Mos.</p>
     <h2>Fotografías do vertido</h2>
-    <div class="gallery">
-      <figure>
-        <img src="/img/vertido-louredo-1.webp" width="630" height="1400" loading="lazy" alt="Regato de auga turbia e grisácea que baixa entre árbores e silvas pola finca particular de Louredo onde se produce o vertido.">
-        <figcaption>Auga residual correndo pola finca particular de Louredo.</figcaption>
-      </figure>
-      <figure>
-        <img src="/img/vertido-louredo-2.webp" width="1400" height="630" loading="lazy" alt="Terreo enlamado e cuberto de sedimentos grises na finca, con restos de vexetación e ramas.">
-        <figcaption>Terreo da finca cuberto de lamas e sedimentos.</figcaption>
-      </figure>
+    <div class="gallery photos">
+      <button type="button" data-full="/img/vertido-louredo-1.webp" aria-label="Ampliar foto 1 do vertido">
+        <span class="frame"><img src="/img/vertido-louredo-1.webp" width="630" height="1400" loading="lazy" alt="Regato de auga turbia e grisácea que baixa entre árbores e silvas pola finca particular de Louredo onde se produce o vertido."></span>
+        <span class="hint">Ampliar</span>
+      </button>
+      <button type="button" data-full="/img/vertido-louredo-2.webp" aria-label="Ampliar foto 2 do vertido">
+        <span class="frame"><img src="/img/vertido-louredo-2.webp" width="1400" height="630" loading="lazy" alt="Terreo enlamado e cuberto de sedimentos grises na finca, con restos de vexetación e ramas."></span>
+        <span class="hint">Ampliar</span>
+      </button>
     </div>
-    <p class="note">Fotografías achegadas pola Plataforma Veciñal Louredo.</p>
+    <dialog class="lightbox" id="lightbox" aria-label="Foto ampliada">
+      <img alt="">
+    </dialog>
     <h2>Plano IS-02 «Infraestruturas, saneamento» do PXOM de Mos</h2>
     <p>Plano n.º IS-02 do Plan Xeral de Ordenación Municipal (PXOM) de Mos: documento refundido adaptado á orde do 18 de xaneiro de 2017, de aprobación definitiva, da Consellería de Medio Ambiente e Ordenación do Territorio da Xunta de Galicia. Escala 1:10.000. Equipo redactor: Barcovi, S.L.</p>
-    <dl class="facts">
-      <dt>Lenda do plano</dt><dd>Sistemas xerais a executar · Colectores interceptores da conca do Louro · Colectores secundarios existentes · Colectores en execución ou proxecto.</dd>
-    </dl>
-    <div class="gallery">
-      <figure>
-        <a href="/img/plano-is-02-saneamento.webp"><img src="/img/plano-is-02-saneamento.webp" width="847" height="1200" loading="lazy" alt="Plano IS-02 de infraestruturas de saneamento do PXOM de Mos, folla 2, coa conca do río Louro e a parroquia de Louredo."></a>
-        <figcaption>Plano completo (folla 2).</figcaption>
-      </figure>
-      <figure>
-        <a href="/img/plano-is-02-detalle-san-antoino.webp"><img src="/img/plano-is-02-detalle-san-antoino.webp" width="1400" height="1061" loading="lazy" alt="Detalle do plano IS-02 na zona de San Antoiño (Louredo), onde figura o rótulo «Depuradora San Antoiño», entre o río Louro e o regato de Fraga."></a>
-        <figcaption>Detalle da zona de San Antoiño, tal como aparece no plano.</figcaption>
-      </figure>
+    <div class="gallery photos plans">
+      <button type="button" data-full="/img/plano-is-02-saneamento.webp" aria-label="Ampliar plano IS-02 completo">
+        <span class="frame"><img src="/img/plano-is-02-saneamento.webp" width="847" height="1200" loading="lazy" alt="Plano IS-02 de infraestruturas de saneamento do PXOM de Mos, folla 2, coa conca do río Louro e a parroquia de Louredo."></span>
+        <span class="hint">Ampliar</span>
+      </button>
+      <button type="button" data-full="/img/plano-is-02-detalle-san-antoino.webp" aria-label="Ampliar detalle do plano en San Antoiño">
+        <span class="frame"><img src="/img/plano-is-02-detalle-san-antoino.webp" width="1400" height="1061" loading="lazy" alt="Detalle do plano IS-02 na zona de San Antoiño (Louredo), onde figura o rótulo «Depuradora San Antoiño», entre o río Louro e o regato de Fraga."></span>
+        <span class="hint">Ampliar</span>
+      </button>
     </div>
     <p><a href="/docs/pxom-mos-is-02-infraestruturas-saneamento.pdf">Descargar o plano IS-02 en PDF (4,5 MB)</a></p>
   </main>
@@ -97,5 +94,6 @@
       <p>Web da <strong>Plataforma Veciñal Louredo</strong> (Mos, Pontevedra).</p>
     </div>
   </footer>
+  <script src="/lightbox.js" defer></script>
 </body>
 </html>

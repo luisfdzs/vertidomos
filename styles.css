@@ -119,10 +119,26 @@ figure { margin: 0; }
 .gallery.photos button:hover .hint { background: var(--accent); }
 .gallery.photos.plans .frame { background: #fff; }
 .gallery.photos.plans .frame img { object-fit: contain; }
-dialog.lightbox { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 94vh; overflow: visible; }
-dialog.lightbox::backdrop { background: rgba(10, 12, 14, .88); }
-dialog.lightbox img { max-width: 94vw; max-height: 88vh; width: auto; height: auto; border-radius: .3rem; }
-dialog.lightbox .close { position: absolute; top: -2.4rem; right: 0; background: #fff; color: var(--ink); border: 0; border-radius: 99px; padding: .3rem .9rem; font-family: inherit; font-weight: 600; font-size: .85rem; cursor: pointer; }
+dialog.lightbox { border: 0; padding: 0; background: transparent; width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; overflow: hidden; color: #fff; }
+dialog.lightbox[open] { display: flex; align-items: center; justify-content: center; animation: lb-fade .25s ease; }
+dialog.lightbox::backdrop { background: rgba(8, 10, 12, .88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+dialog.lightbox img { max-width: calc(100vw - 8rem); max-height: calc(100vh - 7rem); max-height: calc(100dvh - 7rem); width: auto; height: auto; object-fit: contain; border-radius: .6rem; box-shadow: 0 20px 60px rgba(0, 0, 0, .55); animation: lb-zoom .3s ease; }
+dialog.lightbox .nav { position: absolute; z-index: 2; border: 1px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .14); color: #fff; font-family: inherit; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: background .2s, transform .2s; }
+dialog.lightbox .nav:hover { background: rgba(255, 255, 255, .3); }
+dialog.lightbox .nav:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+dialog.lightbox .nav { top: 50%; transform: translateY(-50%); width: 3rem; height: 3rem; border-radius: 50%; font-size: 1.9rem; line-height: 1; padding: 0 0 .25rem; }
+dialog.lightbox .nav:hover { transform: translateY(-50%) scale(1.08); }
+dialog.lightbox .nav.prev { left: 1rem; }
+dialog.lightbox .nav.next { right: 1rem; }
+dialog.lightbox .count { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 2; padding: .25rem .8rem; border-radius: 99px; background: rgba(0, 0, 0, .45); font-size: .8rem; letter-spacing: .05em; }
+@keyframes lb-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lb-zoom { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+@media (max-width: 600px) {
+  dialog.lightbox img { max-width: calc(100vw - 5.5rem); max-height: calc(100dvh - 7rem); border-radius: .3rem; }
+  dialog.lightbox .nav { width: 2.4rem; height: 2.4rem; font-size: 1.6rem; }
+  dialog.lightbox .nav.prev { left: .4rem; }
+  dialog.lightbox .nav.next { right: .4rem; }
+}
 figure img { border-radius: .3rem; border: 1px solid var(--line); background: #fff; max-height: 34rem; width: auto; margin: 0 auto; }
 figcaption { margin-top: .4rem; }
 
