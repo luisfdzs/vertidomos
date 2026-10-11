@@ -6,5 +6,13 @@
     "deploymentEnabled": {
       "dev": false
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/:path((?!proximamente$|styles\\.css$|favicon\\.|icon-192\\.png$|apple-touch-icon\\.png$|robots\\.txt$).*)",
+      "has": [{ "type": "host", "value": "vertidomos.com" }],
+      "destination": "/proximamente",
+      "permanent": false
+    }
+  ]
 }
