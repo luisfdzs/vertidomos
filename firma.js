@@ -7,26 +7,23 @@
   var t = es ? {
     firma: 'Firma en el recuadro antes de enviar.',
     dni: 'Escribe un DNI o NIE válido, con su letra (por ejemplo 12345678Z).',
+    cp: 'Escribe un código postal español de 5 cifras (por ejemplo 36419).',
     sending: 'Enviando…',
     ok: '¡Gracias! Tu firma se ha registrado.',
     duplicado: 'Ya hay una firma con este DNI/NIE. Cada persona solo puede firmar una vez.',
     error: 'No se pudo enviar la firma. Inténtalo de nuevo más tarde.',
-    yaFirmaste: 'Ya firmaste esta petición desde este dispositivo. ¡Gracias!',
-    otra: 'Firmar por otra persona',
     total: function (n) { return n === 1 ? 'Ya ha firmado 1 persona.' : 'Ya han firmado ' + n.toLocaleString('es') + ' personas.'; }
   } : {
     firma: 'Asina no recadro antes de enviar.',
     dni: 'Escribe un DNI ou NIE válido, coa súa letra (por exemplo 12345678Z).',
+    cp: 'Escribe un código postal español de 5 cifras (por exemplo 36419).',
     sending: 'Enviando…',
     ok: 'Grazas! A túa sinatura quedou rexistrada.',
     duplicado: 'Xa hai unha sinatura con este DNI/NIE. Cada persoa só pode asinar unha vez.',
     error: 'Non se puido enviar a sinatura. Téntao de novo máis tarde.',
-    yaFirmaste: 'Xa asinaches esta petición desde este dispositivo. Grazas!',
-    otra: 'Asinar por outra persoa',
     total: function (n) { return n === 1 ? 'Xa asinou 1 persoa.' : 'Xa asinaron ' + n.toLocaleString('gl') + ' persoas.'; }
   };
 
-  var KEY = 'vertidomos-firmado';
   var canvas = form.querySelector('canvas');
   var ctx = canvas.getContext('2d');
   var status = form.querySelector('.form-status');
@@ -46,6 +43,10 @@
   form.dni.addEventListener('input', function () {
     var v = dniNormalizado();
     form.dni.setCustomValidity(v && !dniValido(v) ? t.dni : '');
+  });
+
+  form.cp.addEventListener('input', function () {
+    form.cp.setCustomValidity(form.cp.validity.patternMismatch ? t.cp : '');
   });
 
   // Tamaño real del lienzo según el ancho mostrado y la densidad de píxeles.
@@ -108,36 +109,10 @@
     }).catch(function () {});
   }
 
-  // Aviso si ya se firmó desde este navegador; se puede seguir firmando por otra persona.
-  var notice = document.createElement('div');
-  notice.className = 'ya-firmado';
-  notice.hidden = true;
-  notice.innerHTML = '<p></p><button type="button" class="firma-otra"></button>';
-  notice.querySelector('p').textContent = t.yaFirmaste;
-  notice.querySelector('button').textContent = t.otra;
-  notice.querySelector('button').addEventListener('click', function () {
-    notice.hidden = true;
-    form.hidden = false;
-    say('');
-    resize();
-    form.nombre.focus();
-  });
-  form.parentNode.insertBefore(notice, form);
-
-  function yaFirmado() {
-    try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
-  }
-  function marcarFirmado() {
-    try { localStorage.setItem(KEY, '1'); } catch (e) {}
-  }
-  function mostrarAviso() {
-    form.hidden = true;
-    notice.hidden = false;
-  }
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     form.dni.dispatchEvent(new Event('input'));
+    form.cp.dispatchEvent(new Event('input'));
     if (!form.reportValidity()) return;
     if (!drawn) { say(t.firma, 'error'); canvas.focus(); return; }
 
@@ -150,6 +125,7 @@
         nombre: form.nombre.value,
         apellidos: form.apellidos.value,
         dni: dniNormalizado(),
+        cp: form.cp.value.trim(),
         firma: canvas.toDataURL('image/png'),
         consentimiento: form.consentimiento.checked,
         lang: es ? 'es' : 'gl',
@@ -160,9 +136,7 @@
       if (!r.ok) throw new Error(r.status);
       form.reset();
       clear();
-      marcarFirmado();
-      notice.querySelector('p').textContent = t.ok;
-      mostrarAviso();
+      say(t.ok, 'ok');
       showTotal();
     }).catch(function () {
       say(t.error, 'error');
@@ -172,7 +146,6 @@
   });
 
   window.addEventListener('resize', resize);
-  if (yaFirmado()) mostrarAviso();
   resize();
   showTotal();
 })();

@@ -1,6 +1,6 @@
 // Firmas de la petición al Concello de Mos.
 // GET  /api/firmas → { total }
-// POST /api/firmas  { nombre, apellidos, dni, firma (PNG data URL), consentimiento, lang, web (honeypot) }
+// POST /api/firmas  { nombre, apellidos, dni, cp, firma (PNG data URL), consentimiento, lang, web (honeypot) }
 // Una sola firma por DNI/NIE (índice único): si se repite responde 409.
 import { MongoClient } from 'mongodb';
 import { attachDatabasePool } from '@vercel/functions';
@@ -54,11 +54,13 @@ export async function POST(request) {
   const nombre = text(data.nombre, 80);
   const apellidos = text(data.apellidos, 120);
   const dni = typeof data.dni === 'string' ? data.dni.toUpperCase().replace(/[\s.-]/g, '') : '';
+  const cp = typeof data.cp === 'string' ? data.cp.trim() : '';
   const firma = typeof data.firma === 'string' ? data.firma : '';
 
   if (!nombre || nombre.length > 80) return json({ error: 'nombre' }, 400);
   if (!apellidos || apellidos.length > 120) return json({ error: 'apellidos' }, 400);
   if (!dniValido(dni)) return json({ error: 'dni' }, 400);
+  if (!/^(0[1-9]|[1-4]\d|5[0-2])\d{3}$/.test(cp)) return json({ error: 'cp' }, 400);
   if (!firma.startsWith(PNG) || firma.length > MAX_FIRMA) return json({ error: 'firma' }, 400);
   if (data.consentimiento !== true) return json({ error: 'consentimiento' }, 400);
 
@@ -68,6 +70,7 @@ export async function POST(request) {
       nombre,
       apellidos,
       dni,
+      cp,
       firma,
       lang: data.lang === 'es' ? 'es' : 'gl',
       fecha: new Date(),

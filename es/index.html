@@ -121,12 +121,13 @@
           <label>Nombre <input name="nombre" autocomplete="given-name" maxlength="80" required></label>
           <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="120" required></label>
           <label>DNI o NIE <input name="dni" autocomplete="off" autocapitalize="characters" maxlength="12" placeholder="12345678Z" required></label>
+          <label>Código postal <input name="cp" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="(0[1-9]|[1-4][0-9]|5[0-2])[0-9]{3}" placeholder="36419" required></label>
         </div>
         <label class="hp" aria-hidden="true">Web <input name="web" tabindex="-1" autocomplete="off"></label>
         <p class="firma-label" id="firma-label">Firma <span class="muted">(dibújala con la mano, el dedo o el ratón)</span></p>
         <canvas class="firma-lenzo" tabindex="0" role="img" aria-labelledby="firma-label"></canvas>
         <p><button type="button" class="firma-borrar">Borrar firma</button></p>
-        <label class="check"><input type="checkbox" name="consentimiento" required> Acepto que la Plataforma Veciñal Louredo guarde mi nombre, apellidos, DNI/NIE y firma para presentarlos junto con este escrito en el Concello de Mos.</label>
+        <label class="check"><input type="checkbox" name="consentimiento" required> Acepto que la Plataforma Veciñal Louredo guarde mi nombre, apellidos, DNI/NIE, código postal y firma para presentarlos junto con este escrito en el Concello de Mos.</label>
         <p><button type="submit" class="btn">Firmar la petición</button></p>
         <p class="form-status" role="status" aria-live="polite"></p>
       </form>
