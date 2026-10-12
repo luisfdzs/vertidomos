@@ -8,11 +8,20 @@
     }
   },
   "redirects": [
-    {
-      "source": "/:path((?!proximamente$|styles\\.css$|favicon\\.|icon-192\\.png$|apple-touch-icon\\.png$|robots\\.txt$).*)",
-      "has": [{ "type": "host", "value": "vertidomos.com" }],
-      "destination": "/proximamente",
-      "permanent": false
-    }
+    { "source": "/o-problema", "destination": "/", "permanent": true },
+    { "source": "/preguntas-frecuentes", "destination": "/", "permanent": true },
+    { "source": "/como-denunciar", "destination": "/", "permanent": true },
+    { "source": "/probas", "destination": "/evidencias-e-planos", "permanent": true },
+    { "source": "/novidades", "destination": "/cronoloxia", "permanent": true },
+    { "source": "/quen-somos", "destination": "/contacto", "permanent": true },
+    { "source": "/proximamente", "destination": "/", "permanent": true },
+    { "source": "/es/o-problema", "destination": "/es", "permanent": true },
+    { "source": "/es/preguntas-frecuentes", "destination": "/es", "permanent": true },
+    { "source": "/es/como-denunciar", "destination": "/es", "permanent": true },
+    { "source": "/es/probas", "destination": "/es/evidencias-y-planos", "permanent": true },
+    { "source": "/es/cronoloxia", "destination": "/es/cronologia", "permanent": true },
+    { "source": "/es/novidades", "destination": "/es/cronologia", "permanent": true },
+    { "source": "/es/onde-esta", "destination": "/es/donde-esta", "permanent": true },
+    { "source": "/es/quen-somos", "destination": "/es/contacto", "permanent": true }
   ]
 }
