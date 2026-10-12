@@ -1,0 +1,9 @@
+{
+  "name": "vertidomos",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/functions": "^3.9.11",
+    "mongodb": "^7.7.0"
+  }
+}

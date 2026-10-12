@@ -103,8 +103,34 @@
 
     <section class="petition" id="asina" aria-labelledby="asina-t">
       <h2 id="asina-t">Súmate á petición!</h2>
-      <p class="pending">O formulario de sinaturas estará dispoñible moi pronto.</p>
-      <p class="note">Os datos que deixes no formulario recólleos a Plataforma Veciñal Louredo só para apoiar esta petición ante o Concello de Mos. Non se ceden a outras entidades. Podes pedir que se borren escribindo a <a href="mailto:plataforma.vecinal.louredo@gmail.com">plataforma.vecinal.louredo@gmail.com</a>.</p>
+      <p>Co teu nome e a túa sinatura apoias este escrito, que a Plataforma presentará no Rexistro Xeral do Concello de Mos:</p>
+      <div class="escrito">
+        <p><strong>Á ALCALDÍA-PRESIDENCIA DO CONCELLO DE MOS</strong></p>
+        <p>As persoas abaixo asinantes, en calidade de veciñas e veciños de Mos, comparecen e</p>
+        <p><strong>EXPOÑEN:</strong></p>
+        <p>Que na finca dun particular na parroquia de Louredo vén producíndose desde hai anos un vertido de augas residuais de presunta orixe nas casas da urbanización San Antoiño, do Campo de Fútbol Municipal e da Aldea Alfacuca, de titularidade municipal.</p>
+        <p>Que a execución do saneamento municipal no devandito ámbito responde a un claro interese xeral e ambiental, e resulta imprescindible para salvagardar a saúde pública, a calidade de vida da veciñanza e a protección da contorna natural.</p>
+        <p>Por todo o exposto,</p>
+        <p><strong>SOLICITAN:</strong></p>
+        <p>Que se teña por presentado este escrito e se proceda á execución do «Proxecto de Nova Rede de Fecais en San Antoiño», autorizado pola Confederación Hidrográfica Miño-Sil o 23/05/2023, integrando as instalacións dos terreos de titularidade municipal, Campo de Fútbol de San Antoiño e Aldea Alfacuca, para atallar os vertidos existentes por razóns de interese xeral e ambiental.</p>
+        <p>Para efectos documentais e de validez das sinaturas recollidas, a data deste escrito será a que conste no selo do Rexistro Xeral de Entrada do Concello de Mos no momento da súa presentación formal.</p>
+      </div>
+      <p id="firmas-total" class="firmas-total" hidden></p>
+      <form id="form-firma" class="form-firma" novalidate>
+        <div class="campos">
+          <label>Nome <input name="nombre" autocomplete="given-name" maxlength="80" required></label>
+          <label>Apelidos <input name="apellidos" autocomplete="family-name" maxlength="120" required></label>
+          <label>DNI ou NIE <input name="dni" autocomplete="off" autocapitalize="characters" maxlength="12" placeholder="12345678Z" required></label>
+        </div>
+        <label class="hp" aria-hidden="true">Web <input name="web" tabindex="-1" autocomplete="off"></label>
+        <p class="firma-label" id="firma-label">Sinatura <span class="muted">(debuxa coa man, o dedo ou o rato)</span></p>
+        <canvas class="firma-lenzo" tabindex="0" role="img" aria-labelledby="firma-label"></canvas>
+        <p><button type="button" class="firma-borrar">Borrar sinatura</button></p>
+        <label class="check"><input type="checkbox" name="consentimiento" required> Acepto que a Plataforma Veciñal Louredo garde o meu nome, apelidos, DNI/NIE e sinatura para presentalos xunto con este escrito no Concello de Mos.</label>
+        <p><button type="submit" class="btn">Asinar a petición</button></p>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+      <p class="note">Os datos recólleos a Plataforma Veciñal Louredo só para presentar este escrito ante o Concello de Mos; non se ceden a ninguén máis. O DNI/NIE pídese para que cada persoa asine unha soa vez e para dar validez á sinatura ante o Rexistro. Podes pedir que se borren escribindo a <a href="mailto:plataforma.vecinal.louredo@gmail.com">plataforma.vecinal.louredo@gmail.com</a>.</p>
     </section>
   </main>
   <footer class="site-footer">
@@ -112,5 +138,6 @@
       <p>Web da <strong>Plataforma Veciñal Louredo</strong> (Mos, Pontevedra).</p>
     </div>
   </footer>
+  <script src="/firma.js" defer></script>
 </body>
 </html>
