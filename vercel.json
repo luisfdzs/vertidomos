@@ -8,8 +8,6 @@
     }
   },
   "redirects": [
-    { "source": "/asinantes", "has": [{ "type": "host", "value": "vertidomos.com" }], "destination": "/", "permanent": false },
-    { "source": "/es/firmantes", "has": [{ "type": "host", "value": "vertidomos.com" }], "destination": "/es", "permanent": false },
     { "source": "/o-problema", "destination": "/", "permanent": true },
     { "source": "/preguntas-frecuentes", "destination": "/", "permanent": true },
     { "source": "/como-denunciar", "destination": "/", "permanent": true },

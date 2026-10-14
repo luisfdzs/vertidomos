@@ -1,10 +1,15 @@
 // Genera el escrito para el Registro del Concello de Mos con las firmas guardadas en MongoDB.
-// Uso: node --env-file=.env scripts/escrito.mjs [base]   (base por defecto: vertidomos)
-// Salida: material/escrito-<base>.html (gitignored). Abrir en el navegador e imprimir / guardar como PDF.
+// Uso: npm run escrito [-- base]     → material/escrito-<base>.html (escrito + relación de firmantes)
+//      npm run firmantes [-- base]   → material/firmantes-<base>.html (solo la relación)
+// Base por defecto: vertidomos (producción). Todo queda en material/ (gitignored) y nunca se publica:
+// la lista con DNI y firmas solo se consulta desde aquí, no desde la web. Abrir en el navegador e
+// imprimir / guardar como PDF.
 import { MongoClient } from 'mongodb';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
-const db = process.argv[2] || 'vertidomos';
+const args = process.argv.slice(2);
+const soloLista = args.includes('--lista');
+const db = args.find((a) => !a.startsWith('--')) || 'vertidomos';
 const client = new MongoClient(process.env.MONGODB_URI);
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -27,7 +32,7 @@ try {
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Escrito al Concello de Mos · ${firmas.length} firmas</title>
+<title>${soloLista ? 'Relación de firmantes' : 'Escrito al Concello de Mos'} · ${firmas.length} firmas</title>
 <style>
   @page { size: A4; margin: 18mm 15mm; }
   body { font: 11pt/1.5 Georgia, "Times New Roman", serif; color: #000; max-width: 180mm; margin: 0 auto; padding: 10mm 0; }
@@ -44,7 +49,7 @@ try {
   thead { display: table-header-group; }
 </style>
 </head>
-<body>
+<body>${soloLista ? '' : `
   <section class="escrito">
     <h1>A LA ALCALDÍA-PRESIDENCIA DEL CONCELLO DE MOS</h1>
     <p>Los abajo firmantes, en calidad de vecinos de Mos, comparecen y</p>
@@ -55,7 +60,7 @@ try {
     <p><strong>SOLICITAN:</strong></p>
     <p>Que se tenga por presentado este escrito y se proceda a la ejecución del “Proyecto de Nova Rede de Fecais en San Antoiño”, autorizado por la Confederación Hidrográfica Miño-Sil el 23/05/2023, integrando las instalaciones de los terrenos de titularidad municipal; Campo de Fútbol de San Antoiño y Aldea Alfacuca, para atajar los vertidos existentes por razones de interés general y medioambiental.</p>
     <p>A efectos documentales y de validez de las firmas recogidas, la fecha de este escrito será la que conste en el sello del Registro General de Entrada del Concello de Mos en el momento de su presentación formal.</p>
-  </section>
+  </section>`}
   <section>
     <h2>Relación de firmantes (${firmas.length})</h2>
     <table>
@@ -69,7 +74,7 @@ try {
 `;
 
   mkdirSync('material', { recursive: true });
-  const out = `material/escrito-${db}.html`;
+  const out = `material/${soloLista ? 'firmantes' : 'escrito'}-${db}.html`;
   writeFileSync(out, html);
   const sinDni = firmas.filter((f) => !f.dni).length;
   console.log(`${out}: ${firmas.length} firmas${sinDni ? ` (${sinDni} sin DNI, anteriores a ese campo)` : ''}`);

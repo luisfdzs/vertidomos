@@ -2,6 +2,10 @@
   "name": "vertidomos",
   "private": true,
   "type": "module",
+  "scripts": {
+    "escrito": "node --env-file=.env scripts/escrito.mjs",
+    "firmantes": "node --env-file=.env scripts/escrito.mjs --lista"
+  },
   "dependencies": {
     "@vercel/functions": "^3.9.11",
     "mongodb": "^7.7.0"
