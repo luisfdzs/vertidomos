@@ -164,7 +164,13 @@
     e.preventDefault();
     form.dni.dispatchEvent(new Event('input'));
     form.cp.dispatchEvent(new Event('input'));
-    if (!form.reportValidity()) return;
+    if (!form.checkValidity()) {
+      // Mismo encuadre que los enlaces «Firma la petición», no el scroll por defecto del navegador.
+      var campo = form.querySelector(':invalid');
+      if (campo === form.nombre) irANombre(); else irA(campo, campo);
+      form.reportValidity();
+      return;
+    }
     if (!firma) { say(t.firma, 'error'); abrir.focus(); return; }
 
     submit.disabled = true;
@@ -200,19 +206,21 @@
   var ancla = '#' + form.closest('section').id;
   var cabecera = document.querySelector('.site-header');
   var tactil = matchMedia('(pointer: coarse)');
-  function irANombre() {
+  // Enfoca el campo «desde» dejando visible hasta el campo «hasta».
+  function irA(desde, hasta) {
     if (tactil.matches) {
-      // En el móvil el teclado tapa la mitad inferior: Nombre y Apellidos se centran en la mitad superior, bajo la cabecera fija.
+      // En el móvil el teclado tapa la mitad inferior: los campos se centran en la mitad superior, bajo la cabecera fija.
       var arriba = cabecera ? cabecera.getBoundingClientRect().bottom : 0;
-      var inicio = form.nombre.closest('label').getBoundingClientRect().top;
-      var fin = form.apellidos.getBoundingClientRect().bottom;
+      var inicio = desde.closest('label').getBoundingClientRect().top;
+      var fin = hasta.getBoundingClientRect().bottom;
       var hueco = innerHeight / 2 - arriba - (fin - inicio);
       window.scrollTo({ top: scrollY + inicio - arriba - Math.max(hueco / 2, 8) });
     } else {
-      form.nombre.scrollIntoView({ block: 'center' });
+      desde.scrollIntoView({ block: 'center' });
     }
-    form.nombre.focus({ preventScroll: true });
+    desde.focus({ preventScroll: true });
   }
+  function irANombre() { irA(form.nombre, form.apellidos); }
   document.querySelectorAll('a[href="' + ancla + '"]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       e.preventDefault();
