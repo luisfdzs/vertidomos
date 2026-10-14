@@ -1,7 +1,8 @@
 // Firmas de la petición al Concello de Mos.
 // GET  /api/firmas → { total }
 // GET  /api/firmas?lista&desde=N → { total, firmas: [...] } por páginas, solo fuera de producción
-//      (test.vertidomos.com está tras Vercel Authentication; en producción responde 404).
+//      Lee siempre las firmas reales (base de producción) para revisarlas y sacar el PDF desde test,
+//      que está tras Vercel Authentication; en producción responde 404.
 // POST /api/firmas  { nombre, apellidos, dni, cp, firma (PNG data URL), consentimiento, lang, web (honeypot) }
 // Una sola firma por DNI/NIE (índice único): si se repite responde 409.
 import { MongoClient } from 'mongodb';
@@ -13,7 +14,8 @@ attachDatabasePool(client);
 // Una base de datos por entorno: producción, preview (test) y local.
 const env = process.env.VERCEL_ENV;
 const dbName = process.env.MONGODB_DB || (env === 'production' ? 'vertidomos' : `vertidomos_${env || 'development'}`);
-const firmas = () => client.db(dbName).collection('firmas');
+const firmas = (db = dbName) => client.db(db).collection('firmas');
+const DB_PROD = 'vertidomos';
 let indexed;
 const ensureIndex = () => (indexed ??= firmas().createIndex({ dni: 1 }, { unique: true }).catch((e) => { indexed = null; throw e; }));
 
@@ -43,8 +45,8 @@ export async function GET(request) {
     if (env === 'production') return json({ error: 'not_found' }, 404);
     const desde = Math.max(0, parseInt(url.searchParams.get('desde'), 10) || 0);
     const [total, lista] = await Promise.all([
-      firmas().countDocuments(),
-      firmas()
+      firmas(DB_PROD).countDocuments(),
+      firmas(DB_PROD)
         .find({}, { projection: { _id: 0, nombre: 1, apellidos: 1, dni: 1, cp: 1, firma: 1, fecha: 1 } })
         .sort({ fecha: 1, _id: 1 })
         .skip(desde)
