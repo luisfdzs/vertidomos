@@ -168,7 +168,8 @@
       // Mismo encuadre que los enlaces «Firma la petición», no el scroll por defecto del navegador.
       var campo = form.querySelector(':invalid');
       if (campo === form.nombre) irANombre(); else irA(campo, campo);
-      form.reportValidity();
+      // El scroll es suave: si el aviso salta antes, el navegador hace su propio scroll y deja el campo bajo la cabecera.
+      trasScroll(function () { form.reportValidity(); });
       return;
     }
     if (!firma) { say(t.firma, 'error'); abrir.focus(); return; }
@@ -221,6 +222,15 @@
     desde.focus({ preventScroll: true });
   }
   function irANombre() { irA(form.nombre, form.apellidos); }
+  // Llama a «fn» cuando la página lleva 150 ms sin moverse. No se usa scrollend: puede llegar
+  // tarde el del scroll anterior (el del usuario hasta el botón) y disparar el aviso a mitad de camino.
+  function trasScroll(fn) {
+    var timer;
+    function espera() { clearTimeout(timer); timer = setTimeout(fin, 150); }
+    function fin() { removeEventListener('scroll', espera); fn(); }
+    addEventListener('scroll', espera);
+    espera();
+  }
   document.querySelectorAll('a[href="' + ancla + '"]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       e.preventDefault();
