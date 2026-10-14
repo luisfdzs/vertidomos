@@ -2,6 +2,16 @@
 (function () {
   var main = document.getElementById('contido');
   var nav = document.querySelector('.site-nav ul');
+  // Pestana de asinantes (DNI e sinaturas): só fóra de produción; test.vertidomos.com está protexido.
+  if (nav && !/^(www\.)?vertidomos\.com$/.test(location.hostname)) {
+    var es = location.pathname === '/es' || location.pathname.indexOf('/es/') === 0;
+    var href = es ? '/es/firmantes' : '/asinantes';
+    if (!nav.querySelector('a[href="' + href + '"]')) {
+      var li = document.createElement('li');
+      li.innerHTML = '<a href="' + href + '">' + (es ? 'Firmantes' : 'Asinantes') + '</a>';
+      nav.appendChild(li);
+    }
+  }
   var links = Array.prototype.slice.call(document.querySelectorAll('.site-nav a'));
   var here = links.findIndex(function (a) { return a.getAttribute('aria-current') === 'page'; });
   if (!main || here < 0) return;

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="gl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>try{let d=sessionStorage.getItem("swipe");if(d){sessionStorage.removeItem("swipe");document.documentElement.dataset.swipe=d}}catch(e){}</script>
+  <title>Asinantes | Vertido Mos</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#contido">Saltar ao contido</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">Vertido Mos</a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <ul>
+          <li><a href="/">Inicio / Asina</a></li>
+          <li><a href="/cronoloxia">Cronoloxía</a></li>
+          <li><a href="/evidencias-e-planos">Evidencias e planos</a></li>
+          <li><a href="/onde-esta">Onde está</a></li>
+          <li><a href="/sentenza-supremo">Sentenza do Supremo</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+          <li><a href="/asinantes" aria-current="page">Asinantes</a></li>
+        </ul>
+      </nav>
+      <a class="lang" href="/es/firmantes" hreflang="es" lang="es">Castellano</a>
+    </div>
+  </header>
+  <main id="contido">
+<h1>Asinantes</h1>
+    <p class="note">Só se ve no contorno de test. Inclúe todas as sinaturas recollidas neste contorno.</p>
+    <p><button class="btn" id="pdf" type="button" disabled>Descargar PDF</button> <span id="estado" class="muted" role="status"></span></p>
+    <div class="tabla-scroll">
+      <table class="firmantes" id="lista">
+        <thead><tr><th scope="col">N.º</th><th scope="col">Nome</th><th scope="col">Apelidos</th><th scope="col">DNI/NIE</th><th scope="col">C.P.</th><th scope="col">Sinatura</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Web da <strong>Plataforma Veciñal San Antoiño</strong> (Mos, Pontevedra).</p>
+    </div>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
+  <script src="/firmantes.js" defer></script>
+  <script src="/swipe.js" defer></script>
+</body>
+</html>

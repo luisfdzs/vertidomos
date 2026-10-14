@@ -1,5 +1,7 @@
 // Firmas de la petición al Concello de Mos.
 // GET  /api/firmas → { total }
+// GET  /api/firmas?lista&desde=N → { total, firmas: [...] } por páginas, solo fuera de producción
+//      (test.vertidomos.com está tras Vercel Authentication; en producción responde 404).
 // POST /api/firmas  { nombre, apellidos, dni, cp, firma (PNG data URL), consentimiento, lang, web (honeypot) }
 // Una sola firma por DNI/NIE (índice único): si se repite responde 409.
 import { MongoClient } from 'mongodb';
@@ -32,8 +34,25 @@ const json = (body, status = 200, headers = {}) =>
 
 const text = (v, max) => (typeof v === 'string' ? v.trim().replace(/\s+/g, ' ') : '').slice(0, max + 1);
 
-export async function GET() {
+const PAGINA = 50; // firmas por petición: cada PNG ocupa hasta ~150 KB y la respuesta no puede pasar de 4,5 MB
+
+export async function GET(request) {
   if (!process.env.MONGODB_URI) return json({ error: 'not_configured' }, 503);
+  const url = new URL(request.url);
+  if (url.searchParams.has('lista')) {
+    if (env === 'production') return json({ error: 'not_found' }, 404);
+    const desde = Math.max(0, parseInt(url.searchParams.get('desde'), 10) || 0);
+    const [total, lista] = await Promise.all([
+      firmas().countDocuments(),
+      firmas()
+        .find({}, { projection: { _id: 0, nombre: 1, apellidos: 1, dni: 1, cp: 1, firma: 1, fecha: 1 } })
+        .sort({ fecha: 1, _id: 1 })
+        .skip(desde)
+        .limit(PAGINA)
+        .toArray(),
+    ]);
+    return json({ total, firmas: lista });
+  }
   const total = await firmas().estimatedDocumentCount();
   return json({ total }, 200, { 'cache-control': 'public, s-maxage=60, stale-while-revalidate=300' });
 }
