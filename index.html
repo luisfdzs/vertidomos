@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>try{let d=sessionStorage.getItem("swipe");if(d){sessionStorage.removeItem("swipe");document.documentElement.dataset.swipe=d}}catch(e){}</script>
   <title>Urbanización San Antoiño (Mos): vertido de augas fecais</title>
   <meta name="description" content="Esiximos ao Concello de Mos unha solución urxente ao vertido de augas residuais da Urbanización San Antoiño en Louredo. Asina a petición.">
   <link rel="canonical" href="https://vertidomos.com/">
@@ -92,7 +93,7 @@
     </div>
   </header>
   <main id="contido">
-<h1>Vertido de augas residuais en San Antoiño, Louredo (Mos)</h1>
+<h1>Vertido de augas residuais en Louredo (Mos)</h1>
     <p class="demand">Esiximos solución urxente ao Concello de Mos</p>
     <p><a class="btn" href="#asina">Asina a petición</a></p>
     <p class="lead">A Plataforma Veciñal San Antoiño (parroquia de Louredo, Concello de Mos, Pontevedra) denuncia que desde hai anos se vén producindo un vertido de augas residuais na finca dun particular, de presunta orixe na <strong>Urbanización San Antoiño</strong>, a <strong>Aldea Alfacuca</strong>, de titularidade municipal, e o <strong>Campo de Fútbol Municipal</strong> en San Antoiño.</p>
@@ -126,9 +127,14 @@
           <label>Código postal <input name="cp" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="(0[1-9]|[1-4][0-9]|5[0-2])[0-9]{3}" placeholder="36419" required></label>
         </div>
         <label class="hp" aria-hidden="true">Web <input name="web" tabindex="-1" autocomplete="off"></label>
-        <p class="firma-label" id="firma-label">Sinatura <span class="muted">(debuxa coa man, o dedo ou o rato)</span></p>
-        <canvas class="firma-lenzo" tabindex="0" role="img" aria-labelledby="firma-label"></canvas>
+        <p class="firma-label" id="firma-label">Sinatura</p>
+        <button type="button" class="firma-abrir" aria-describedby="firma-label"><span class="firma-vacia">Preme aquí para asinar</span><img class="firma-vista" alt="A túa sinatura" hidden></button>
         <p><button type="button" class="firma-borrar">Borrar sinatura</button></p>
+        <dialog class="firma-modal" aria-labelledby="firma-modal-titulo">
+          <p class="firma-label" id="firma-modal-titulo">Asina no recadro <span class="muted">(coa man, o dedo ou o rato)</span></p>
+          <canvas class="firma-lenzo" role="img" aria-labelledby="firma-modal-titulo"></canvas>
+          <p class="firma-accions"><button type="button" class="firma-borrar">Borrar</button> <button type="button" class="btn firma-feito">Feito</button></p>
+        </dialog>
         <label class="check"><input type="checkbox" name="consentimiento" required> Acepto que a Plataforma Veciñal Louredo garde o meu nome, apelidos, DNI/NIE, código postal e sinatura para presentalos xunto con este escrito no Concello de Mos.</label>
         <p><button type="submit" class="btn">Asinar a petición</button></p>
         <p class="form-status" role="status" aria-live="polite"></p>
@@ -138,9 +144,10 @@
   </main>
   <footer class="site-footer">
     <div class="wrap">
-      <p>Web da <strong>Plataforma Veciñal Louredo</strong> (Mos, Pontevedra).</p>
+      <p>Web da <strong>Plataforma Veciñal San Antoiño</strong> (Mos, Pontevedra).</p>
     </div>
   </footer>
   <script src="/firma.js" defer></script>
+  <script src="/swipe.js" defer></script>
 </body>
 </html>

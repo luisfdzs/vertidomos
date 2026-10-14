@@ -1,11 +1,12 @@
-// Formulario de firmas: lienzo para firmar a mano alzada y envío a /api/firmas.
+// Formulario de firmas: lienzo para firmar a mano alzada (en un diálogo a pantalla completa,
+// para que el dedo que hace scroll por el formulario no pinte) y envío a /api/firmas.
 (function () {
   var form = document.getElementById('form-firma');
   if (!form) return;
 
   var es = document.documentElement.lang === 'es';
   var t = es ? {
-    firma: 'Firma en el recuadro antes de enviar.',
+    firma: 'Falta la firma: pulsa en el recuadro para firmar.',
     dni: 'Escribe un DNI o NIE válido, con su letra (por ejemplo 12345678Z).',
     cp: 'Escribe un código postal español de 5 cifras (por ejemplo 36419).',
     sending: 'Enviando…',
@@ -14,7 +15,7 @@
     error: 'No se pudo enviar la firma. Inténtalo de nuevo más tarde.',
     total: function (n) { return n === 1 ? 'Ya ha firmado 1 persona.' : 'Ya han firmado ' + n.toLocaleString('es') + ' personas.'; }
   } : {
-    firma: 'Asina no recadro antes de enviar.',
+    firma: 'Falta a sinatura: preme no recadro para asinar.',
     dni: 'Escribe un DNI ou NIE válido, coa súa letra (por exemplo 12345678Z).',
     cp: 'Escribe un código postal español de 5 cifras (por exemplo 36419).',
     sending: 'Enviando…',
@@ -26,11 +27,17 @@
 
   var canvas = form.querySelector('canvas');
   var ctx = canvas.getContext('2d');
+  var modal = form.querySelector('.firma-modal');
+  var abrir = form.querySelector('.firma-abrir');
+  var vacia = abrir.querySelector('.firma-vacia');
+  var vista = abrir.querySelector('.firma-vista');
   var status = form.querySelector('.form-status');
   var submit = form.querySelector('button[type="submit"]');
   var counter = document.getElementById('firmas-total');
-  var drawn = false;
+  var firma = null; // PNG (data URL) de la firma aceptada
+  var box = null;   // rectángulo con lo dibujado, en px CSS
   var drawing = false;
+  var touched = false; // se dibujó o borró desde que se abrió el diálogo
 
   // DNI (8 cifras + letra) o NIE (X/Y/Z + 7 cifras + letra), con la letra de control comprobada.
   function dniValido(v) {
@@ -50,30 +57,73 @@
   });
 
   // Tamaño real del lienzo según el ancho mostrado y la densidad de píxeles.
+  // Solo mide cuando el diálogo está abierto; si cambia el tamaño, el lienzo queda en blanco.
   function resize() {
     var ratio = Math.min(window.devicePixelRatio || 1, 2);
     var w = canvas.clientWidth;
     var h = canvas.clientHeight;
-    if (!w || canvas.width === Math.round(w * ratio)) return;
+    if (!w || (canvas.width === Math.round(w * ratio) && canvas.height === Math.round(h * ratio))) return;
     canvas.width = Math.round(w * ratio);
     canvas.height = Math.round(h * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    ctx.lineWidth = 2.2;
+    ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = '#1d2328';
-    drawn = false;
+    box = null;
   }
 
   function point(e) {
     var r = canvas.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
+    var p = { x: e.clientX - r.left, y: e.clientY - r.top };
+    box = box ? { x0: Math.min(box.x0, p.x), y0: Math.min(box.y0, p.y), x1: Math.max(box.x1, p.x), y1: Math.max(box.y1, p.y) }
+              : { x0: p.x, y0: p.y, x1: p.x, y1: p.y };
+    return p;
   }
+
+  // PNG recortado a lo dibujado (y como mucho 1000 px de ancho), para que encaje bien en el escrito.
+  function exportar() {
+    var ratio = canvas.width / canvas.clientWidth;
+    var pad = 8;
+    var x = Math.max(0, Math.floor((box.x0 - pad) * ratio));
+    var y = Math.max(0, Math.floor((box.y0 - pad) * ratio));
+    var w = Math.min(canvas.width, Math.ceil((box.x1 + pad) * ratio)) - x;
+    var h = Math.min(canvas.height, Math.ceil((box.y1 + pad) * ratio)) - y;
+    var scale = Math.min(1, 1000 / w);
+    var out = document.createElement('canvas');
+    out.width = Math.max(1, Math.round(w * scale));
+    out.height = Math.max(1, Math.round(h * scale));
+    out.getContext('2d').drawImage(canvas, x, y, w, h, 0, 0, out.width, out.height);
+    return out.toDataURL('image/png');
+  }
+
+  function mostrar() {
+    vista.hidden = !firma;
+    vacia.hidden = !!firma;
+    if (firma) vista.src = firma; else vista.removeAttribute('src');
+  }
+
+  abrir.addEventListener('click', function () {
+    touched = false;
+    modal.showModal();
+    resize();
+  });
+  // Al cerrar (botón o tecla Esc) se acepta lo que haya en el lienzo.
+  function cerrar() {
+    drawing = false;
+    if (touched) { firma = box ? exportar() : null; mostrar(); }
+    if (firma && status.classList.contains('error')) say('');
+    modal.close();
+    abrir.focus();
+  }
+  modal.addEventListener('cancel', function (e) { e.preventDefault(); cerrar(); });
+  form.querySelector('.firma-feito').addEventListener('click', cerrar);
 
   canvas.addEventListener('pointerdown', function (e) {
     e.preventDefault();
     canvas.setPointerCapture(e.pointerId);
     drawing = true;
+    touched = true;
     var p = point(e);
     ctx.beginPath();
     ctx.moveTo(p.x, p.y);
@@ -85,7 +135,6 @@
     var p = point(e);
     ctx.lineTo(p.x, p.y);
     ctx.stroke();
-    drawn = true;
   });
   ['pointerup', 'pointercancel'].forEach(function (type) {
     canvas.addEventListener(type, function () { drawing = false; });
@@ -93,9 +142,11 @@
 
   function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawn = false;
+    box = null;
+    touched = true;
+    if (!modal.open) { firma = null; mostrar(); }
   }
-  form.querySelector('.firma-borrar').addEventListener('click', clear);
+  form.querySelectorAll('.firma-borrar').forEach(function (b) { b.addEventListener('click', clear); });
 
   function say(msg, kind) {
     status.textContent = msg;
@@ -114,7 +165,7 @@
     form.dni.dispatchEvent(new Event('input'));
     form.cp.dispatchEvent(new Event('input'));
     if (!form.reportValidity()) return;
-    if (!drawn) { say(t.firma, 'error'); canvas.focus(); return; }
+    if (!firma) { say(t.firma, 'error'); abrir.focus(); return; }
 
     submit.disabled = true;
     say(t.sending);
@@ -126,7 +177,7 @@
         apellidos: form.apellidos.value,
         dni: dniNormalizado(),
         cp: form.cp.value.trim(),
-        firma: canvas.toDataURL('image/png'),
+        firma: firma,
         consentimiento: form.consentimiento.checked,
         lang: es ? 'es' : 'gl',
         web: form.web.value
@@ -144,6 +195,22 @@
       submit.disabled = false;
     });
   });
+
+  // Los enlaces «Firma la petición» (#asina / #firma) llevan directamente al campo Nombre, no al inicio del escrito.
+  var ancla = '#' + form.closest('section').id;
+  function irANombre() {
+    form.nombre.scrollIntoView({ block: 'center' });
+    form.nombre.focus({ preventScroll: true });
+  }
+  document.querySelectorAll('a[href="' + ancla + '"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      history.replaceState(null, '', ancla);
+      irANombre();
+    });
+  });
+  // Al llegar desde otra página (/#asina), tras el scroll al ancla que hace el navegador.
+  if (location.hash === ancla) window.addEventListener('load', irANombre);
 
   window.addEventListener('resize', resize);
   resize();
