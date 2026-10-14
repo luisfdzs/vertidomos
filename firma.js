@@ -198,8 +198,19 @@
 
   // Los enlaces «Firma la petición» (#asina / #firma) llevan directamente al campo Nombre, no al inicio del escrito.
   var ancla = '#' + form.closest('section').id;
+  var cabecera = document.querySelector('.site-header');
+  var tactil = matchMedia('(pointer: coarse)');
   function irANombre() {
-    form.nombre.scrollIntoView({ block: 'center' });
+    if (tactil.matches) {
+      // En el móvil el teclado tapa la mitad inferior: Nombre y Apellidos se centran en la mitad superior, bajo la cabecera fija.
+      var arriba = cabecera ? cabecera.getBoundingClientRect().bottom : 0;
+      var inicio = form.nombre.closest('label').getBoundingClientRect().top;
+      var fin = form.apellidos.getBoundingClientRect().bottom;
+      var hueco = innerHeight / 2 - arriba - (fin - inicio);
+      window.scrollTo({ top: scrollY + inicio - arriba - Math.max(hueco / 2, 8) });
+    } else {
+      form.nombre.scrollIntoView({ block: 'center' });
+    }
     form.nombre.focus({ preventScroll: true });
   }
   document.querySelectorAll('a[href="' + ancla + '"]').forEach(function (a) {
