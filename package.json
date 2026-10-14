@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "escrito": "node --env-file=.env scripts/escrito.mjs",
-    "firmantes": "node --env-file=.env scripts/escrito.mjs --lista"
+    "escrito:pdf": "node --env-file=.env scripts/escrito.mjs --pdf",
+    "firmantes": "node --env-file=.env scripts/escrito.mjs --lista",
+    "firmantes:pdf": "node --env-file=.env scripts/escrito.mjs --lista --pdf"
   },
   "dependencies": {
     "@vercel/functions": "^3.9.11",

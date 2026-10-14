@@ -4,11 +4,17 @@
 // Base por defecto: vertidomos (producción). Todo queda en material/ (gitignored) y nunca se publica:
 // la lista con DNI y firmas solo se consulta desde aquí, no desde la web. Abrir en el navegador e
 // imprimir / guardar como PDF.
+// Con --pdf (npm run escrito:pdf / firmantes:pdf) genera directamente el .pdf con Chrome o Edge en
+// modo headless, sin dejar el .html.
 import { MongoClient } from 'mongodb';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const args = process.argv.slice(2);
 const soloLista = args.includes('--lista');
+const pdf = args.includes('--pdf');
 const db = args.find((a) => !a.startsWith('--')) || 'vertidomos';
 const client = new MongoClient(process.env.MONGODB_URI);
 
@@ -74,10 +80,36 @@ try {
 `;
 
   mkdirSync('material', { recursive: true });
-  const out = `material/${soloLista ? 'firmantes' : 'escrito'}-${db}.html`;
-  writeFileSync(out, html);
+  const base = `material/${soloLista ? 'firmantes' : 'escrito'}-${db}`;
+  writeFileSync(`${base}.html`, html);
+  let out = `${base}.html`;
+  if (pdf) {
+    out = `${base}.pdf`;
+    imprimirPdf(`${base}.html`, out);
+    rmSync(`${base}.html`);
+  }
   const sinDni = firmas.filter((f) => !f.dni).length;
   console.log(`${out}: ${firmas.length} firmas${sinDni ? ` (${sinDni} sin DNI, anteriores a ese campo)` : ''}`);
 } finally {
   await client.close();
+}
+
+function imprimirPdf(html, pdf) {
+  const navegadores = [
+    process.env.CHROME_PATH,
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+    'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+  ];
+  const nav = navegadores.find((p) => p && existsSync(p));
+  if (!nav) throw new Error('No se encontró Chrome ni Edge; indica la ruta con CHROME_PATH.');
+  execFileSync(nav, [
+    '--headless', '--disable-gpu', '--no-pdf-header-footer',
+    `--print-to-pdf=${resolve(pdf)}`, pathToFileURL(resolve(html)).href,
+  ], { stdio: 'ignore' });
+  if (!existsSync(pdf)) throw new Error(`No se generó ${pdf}`);
 }
