@@ -246,6 +246,7 @@ figure { margin: 0; }
 }
 .gallery.photos button:hover .hint { background: var(--accent); }
 .gallery.photos.plans .frame { background: #fff; }
+.gallery.photos.posters .frame { aspect-ratio: 3 / 4; }
 .gallery.photos.plans .frame img { object-fit: contain; }
 .gallery.photos.plans button:hover .frame img { transform: scale(1.02); }
 dialog.lightbox { border: 0; padding: 0; background: transparent; width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; overflow: hidden; color: #fff; }

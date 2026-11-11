@@ -17,6 +17,7 @@ HTML estático sin build. Gallego en la raíz (`/`) y castellano en `/es/`. Cada
 | `/` (inicio y firma) | `/es/` |
 | `/cronoloxia` | `/es/cronologia` |
 | `/evidencias-e-planos` | `/es/evidencias-y-planos` |
+| `/pancartas` | `/es/pancartas` |
 | `/onde-esta` | `/es/donde-esta` |
 | `/sentenza-supremo` | `/es/sentencia-supremo` |
 | `/contacto` | `/es/contacto` |
